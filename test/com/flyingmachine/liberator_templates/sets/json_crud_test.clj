@@ -28,6 +28,7 @@
   :return [{:id 1}])
 
 (defupdate!
+  [params auth]
   :invalid? (validator params)
   :return record-in-ctx)
 
