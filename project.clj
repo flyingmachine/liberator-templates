@@ -1,4 +1,4 @@
-(defproject com.flyingmachine/liberator-templates "0.1.0"
+(defproject com.flyingmachine/liberator-templates "0.1.1"
   :description "Create macros which create liberator resources"
   :url "https://github.com/flyingmachine/liberator-templates"
   :license {:name "Eclipse Public License"

@@ -1,7 +1,6 @@
 (ns com.flyingmachine.liberator-templates.sets.json-crud
   (:require [com.flyingmachine.liberator-templates.core :refer (deftemplates)]))
 
-
 (defn add-errors
   [errors]
   [true {:errors errors
@@ -41,7 +40,7 @@
                     :return return})
 
 (deftemplates
-  {:paramlist [params]
+  {:paramlist [params auth]
    :decision-abbreviations abbreviations
    :shared-decisions [:available-media-types ["application/json"]]}
   (defquery)
