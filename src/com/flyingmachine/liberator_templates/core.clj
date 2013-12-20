@@ -1,27 +1,28 @@
 (ns com.flyingmachine.liberator-templates.core
   (:require [liberator.core :refer (defresource)]))
 
-(defn expand
-  [action abbreviations [key form]]
-  (if-let [expander (get abbreviations key)]
-    (expander action form)
-    [key form]))
-
 (defn resource-name
   [template-name]
   (symbol (clojure.string/replace (str template-name) #"def" "")))
 
 (defn paramlist
+  "Each template can maybe start with a param list. If it does, use that."
   [shared-paramlist decisions]
   (let [maybe-paramlist (first decisions)]
     (if (vector? maybe-paramlist)
       maybe-paramlist
       shared-paramlist)))
 
+(defn expand-decision
+  [action abbreviations [key form]]
+  (if-let [expander (get abbreviations key)]
+    (expander action form)
+    [key form]))
+
 (defn expand-decisions
   [abbreviations resource-name decisions]
   (if-not (empty? decisions)
-    (reduce into (map #(expand (keyword resource-name) %)
+    (reduce into (map #(expand-decision (keyword resource-name) abbreviations %)
                       (partition 2 decisions)))))
 
 (defn deftemplate
@@ -29,7 +30,7 @@
   `(defmacro ~template-name
      [& decisions#]
      (let [paramlist# (paramlist (quote ~(:paramlist shared-options)) decisions#)
-           decision-abbreviations# (quote ~(:decision-abbreviations shared-options))
+           decision-abbreviations# ~(:decision-abbreviations shared-options)
            resource-name# (quote ~(resource-name template-name))]
        `(defresource ~resource-name# ~paramlist#
           ~~@(:shared-decisions shared-options)
@@ -39,9 +40,3 @@
 (defmacro deftemplates
   [options & templates]
   `(do ~@(map #(apply deftemplate options %) templates)))
-
-(deftemplates
-  {:paramlist [params auth]
-   :decision-abbreviations expanders
-   :shared-decisions [:available-media-types ["application/json"]]}
-  (defshow :allowed-methods [:get]))
