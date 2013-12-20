@@ -39,11 +39,11 @@
   :invalid? (validator params))
 
 (defroutes routes
-  (GET "/entities" {params :params} (query params))
-  (GET "/entities/:id" {params :params} (show params))
-  (PUT "/entities/:id" {params :params} (update! params))
-  (DELETE "/entities/:id" {params :params} (delete! params))
-  (POST "/entities" {params :params} (create! params)))
+  (GET "/entities" {params :params} (query params {}))
+  (GET "/entities/:id" {params :params} (show params {}))
+  (PUT "/entities/:id" {params :params} (update! params {}))
+  (DELETE "/entities/:id" {params :params} (delete! params {}))
+  (POST "/entities" {params :params} (create! params {})))
 
 (def app
   (-> routes
@@ -53,14 +53,14 @@
       wrap-params))
 
 (defnpd req
-  [method path [params nil]]
+  [method path [params nil] [auth nil]]
   (-> (request method path params)
       (content-type "application/json")))
 
 (defnpd res
-  [method path [params nil]]
+  [method path [params nil] [auth nil]]
   (let [params (json/write-str params)]
-       (app (req method path params))))
+       (app (req method path params auth))))
 
 (defn data
   [response]
@@ -69,8 +69,8 @@
       json/read-str))
 
 (defnpd response-data
-  [method path [params nil]]
-  (data (res method path params)))
+  [method path [params nil] [auth nil]]
+  (data (res method path params auth)))
 
 (fact "show returns the id"
   (response-data :get "/entities/1")

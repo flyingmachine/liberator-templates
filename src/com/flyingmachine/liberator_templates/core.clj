@@ -13,6 +13,13 @@
       maybe-paramlist
       shared-paramlist)))
 
+(defn extract-paramlist
+  [shared-paramlist decisions]
+  (let [maybe-paramlist (first decisions)]
+    (if (vector? maybe-paramlist)
+      [maybe-paramlist (rest decisions)]
+      [shared-paramlist decisions])))
+
 (defn expand-decision
   [action abbreviations [key form]]
   (if-let [expander (get abbreviations key)]
@@ -29,7 +36,7 @@
   [shared-options template-name & template-decisions]
   `(defmacro ~template-name
      [& decisions#]
-     (let [paramlist# (paramlist (quote ~(:paramlist shared-options)) decisions#)
+     (let [[paramlist# decisions#] (extract-paramlist (quote ~(:paramlist shared-options)) decisions#)
            decision-abbreviations# ~(:decision-abbreviations shared-options)
            resource-name# (quote ~(resource-name template-name))]
        `(defresource ~resource-name# ~paramlist#
