@@ -16,7 +16,7 @@
   (get ctx :record))
 
 (defn invalid?
-  [action form]
+  [resource-name form]
   `[:malformed? ~form :handle-malformed errors-in-ctx])
 
 (def new?
@@ -31,10 +31,10 @@
                :create! :handle-created})
 
 (defn return
-  [action form]
-  `[:new? ~(new? action)
+  [resource-name form]
+  `[:new? ~(new? resource-name)
     :respond-with-entity? true
-    ~(handlers action) ~form])
+    ~(handlers resource-name) ~form])
 
 (def abbreviations {:invalid? invalid?
                     :return return})
