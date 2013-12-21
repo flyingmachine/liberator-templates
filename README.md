@@ -124,10 +124,10 @@ Here's a full example:
   `[:malformed? ~form :handle-malformed errors-in-ctx])
 
 (def new?
-   {:show    false
-    :query   false
-    :update! false
-    :create! true})
+  {:show    false
+   :query   false
+   :update! false
+   :create! true})
 
 (def handlers {:show    :handle-ok
                :query   :handle-ok
@@ -162,7 +162,7 @@ Here's a full example:
 ;; Calling a template with an abbreviation:
 (defupdate!
   :invalid? (fn [_] (if (not (valid? params))
-                       [true {:errors {:blah "blah"}}]))
+                     [true {:errors {:blah "blah"}}]))
   ;; We place the {:record x} key/value in the context. Then, when the
   ;; :exists? decision runs it calls record-in-ctx which checks
   ;; whether a record is actually found
@@ -170,18 +170,17 @@ Here's a full example:
                         {:record (magic-database/find (:id params))}))
   :return record-in-ctx)
 
-(liberator.core/defresource update!
- [params auth]
- :available-media-types ["application/json"]
- :allowed-methods [:put]
- :exists? record-in-ctx
- :can-put-to-missing? false
- :malformed? (fn [_] (if (not (valid? params)) [true {:errors {:blah "blah"}}]))
- :handle-malformed errorsin-ctx
- :authorized? (fn [_] (if auth {:record (magic-database/find (:id params))}))
- :new? false
- :respond-with-entity? true
- :handle-ok record-in-ctx)
+(liberator.core/defresource update! [params auth]
+  :available-media-types ["application/json"]
+  :allowed-methods [:put]
+  :exists? record-in-ctx
+  :can-put-to-missing? false
+  :malformed? (fn [_] (if (not (valid? params)) [true {:errors {:blah "blah"}}]))
+  :handle-malformed errorsin-ctx
+  :authorized? (fn [_] (if auth {:record (magic-database/find (:id params))}))
+  :new? false
+  :respond-with-entity? true
+  :handle-ok record-in-ctx)
 ```
 
 So, abbreviations consist of two parts:
