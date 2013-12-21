@@ -1,7 +1,7 @@
 # Liberator Templates
 
 Liberator Templates allows you to abstract patterns in your
-[liberator][http://clojure-liberator.github.io/liberator/] resources
+[liberator](http://clojure-liberator.github.io/liberator/) resources
 so that you can define resources more consistently and concisely.
 
 ## Installation
