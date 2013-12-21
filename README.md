@@ -163,9 +163,6 @@ Here's a full example:
 (defupdate!
   :invalid? (fn [_] (if (not (valid? params))
                      [true {:errors {:blah "blah"}}]))
-  ;; We place the {:record x} key/value in the context. Then, when the
-  ;; :exists? decision runs it calls record-in-ctx which checks
-  ;; whether a record is actually found
   :authorized? (fn [_] (if auth
                         {:record (magic-database/find (:id params))}))
   :return record-in-ctx)
